@@ -2,7 +2,7 @@
 SLASH=/
 
 // MARK: General
-FEEDBACK_EMAIL="info@rarilabs.com"
+FEEDBACK_EMAIL="help@grndd.systems"
 DEFAULT_REFERRAL_CODE="kPRQYQUcWzW"
 WEB_APP_URL="https:${SLASH}/app.stage.rarime.com"
 TERMS_OF_USE_URL="https:${SLASH}/staging.rarime.com/general-terms.html"

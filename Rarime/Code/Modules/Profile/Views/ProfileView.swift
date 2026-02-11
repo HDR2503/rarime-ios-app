@@ -2,7 +2,7 @@ import MessageUI
 import SwiftUI
 
 private enum ProfileRoute: Hashable {
-    case authMethod, recovery, theme, appIcon
+    case faq
 }
 
 struct ProfileView: View {
@@ -34,23 +34,14 @@ struct ProfileView: View {
         NavigationStack(path: $path) {
             content.navigationDestination(for: ProfileRoute.self) { route in
                 switch route {
-                case .authMethod:
-                    AuthMethodView(onBack: { path.removeLast() })
-                        .navigationBarBackButtonHidden()
-                case .recovery:
+                case .faq:
                     ProfileRouteLayout(
-                        title: String(localized: "Recovery Method"),
+                        title: String(localized: "FAQ"),
                         onBack: { path.removeLast() }
                     ) {
-                        RecoveryMethodSelectionView()
+                        FAQView()
                     }
                     .navigationBarBackButtonHidden()
-                case .theme:
-                    ThemeView(onBack: { path.removeLast() })
-                        .navigationBarBackButtonHidden()
-                case .appIcon:
-                    AppIconView(onBack: { path.removeLast() })
-                        .navigationBarBackButtonHidden()
                 }
             }
         }
@@ -67,52 +58,6 @@ struct ProfileView: View {
                     .padding(.horizontal, 8)
                 VStack(spacing: 12) {
                     ScrollView(showsIndicators: false) {
-                        CardContainer {
-                            HStack {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text("Account")
-                                        .buttonLarge()
-                                        .foregroundStyle(.textPrimary)
-                                    Text("Address: \(Ethereum.formatAddress(userManager.ethereumAddress ?? ""))")
-                                        .body4()
-                                        .foregroundStyle(.textSecondary)
-                                }
-                                Spacer()
-                                PassportImageView(image: passportManager.passport?.passportImage, size: 40)
-                            }
-                        }
-                        CardContainer {
-                            VStack(spacing: 20) {
-                                ProfileRow(
-                                    icon: .userShared2Line,
-                                    title: String(localized: "Recovery Method"),
-                                    action: { path.append(.recovery) }
-                                )
-                                ProfileRow(
-                                    icon: .shieldKeyholeLine,
-                                    title: String(localized: "Auth Method"),
-                                    action: { path.append(.authMethod) }
-                                )
-                            }
-                        }
-                        CardContainer {
-                            VStack(spacing: 20) {
-                                ProfileRow(
-                                    icon: .sunLine,
-                                    title: String(localized: "Theme"),
-                                    value: settingsManager.colorScheme.title,
-                                    action: { path.append(.theme) }
-                                )
-                                if appIconManager.isAppIconsSupported {
-                                    ProfileRow(
-                                        icon: .rarime,
-                                        title: String(localized: "App Icon"),
-                                        value: appIconManager.appIcon.title,
-                                        action: { path.append(.appIcon) }
-                                    )
-                                }
-                            }
-                        }
                         CardContainer {
                             VStack(spacing: 20) {
                                 ProfileRow(
@@ -140,9 +85,14 @@ struct ProfileView: View {
                                         action: { isShareWithDeveloper = true }
                                     )
                                     .fullScreenCover(isPresented: $isShareWithDeveloper) {
-                                        FeedbackMailView(isShowing: $isShareWithDeveloper)
+                                        CelestialsFeedbackMailView(isShowing: $isShareWithDeveloper)
                                     }
                                 }
+                                ProfileRow(
+                                    icon: .questionLine,
+                                    title: "FAQ",
+                                    action: { path.append(.faq) }
+                                )
                             }
                         }
 #if DEVELOPMENT

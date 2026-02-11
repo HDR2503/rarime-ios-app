@@ -2,16 +2,20 @@ import SwiftUI
 
 struct NavBarView: View {
     @Binding var selectedTab: MainTabs
- 	@Binding var isQrCodeScanSheetShown: Bool
-
+    @Binding var isQrCodeScanSheetShown: Bool
+    @Binding var isContactEmailSheetShown: Bool
+    
     var body: some View {
         HStack(spacing: 8) {
             ForEach(MainTabs.allCases, id: \.self) { item in
                 NavBarTabItem(tab: item, isActive: selectedTab == item)
                     .onTapGesture {
-                        if item == .scanQr {
+                        switch item {
+                        case .scanQr:
                             isQrCodeScanSheetShown = true
-                        } else {
+                        case .contact:
+                            isContactEmailSheetShown = true
+                        default:
                             selectedTab = item
                         }
                         FeedbackGenerator.shared.impact(.light)
@@ -26,7 +30,7 @@ struct NavBarView: View {
 struct NavBarTabItem: View {
     let tab: MainTabs
     let isActive: Bool
-
+    
     var body: some View {
         Image(isActive ? tab.activeIconName : tab.iconName)
             .iconLarge()
@@ -38,5 +42,9 @@ struct NavBarTabItem: View {
 }
 
 #Preview {
-    NavBarView(selectedTab: .constant(.home), isQrCodeScanSheetShown: .constant(false))
+    NavBarView(
+        selectedTab: .constant(.home),
+        isQrCodeScanSheetShown: .constant(false),
+        isContactEmailSheetShown: .constant(false)
+    )
 }
