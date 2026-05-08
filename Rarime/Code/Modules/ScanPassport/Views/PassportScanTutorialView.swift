@@ -83,15 +83,13 @@ private struct PassportScanTutorialStep: View {
         step == PassportTutorialStep.allCases.last
     }
     
-    private var screenHeight: CGFloat {
-        UIScreen.main.bounds.height
-    }
-    
     var body: some View {
         VStack(spacing: 32) {
-            LoopVideoPlayer(url: step.video(isUSA))
-                .aspectRatio(362 / 404, contentMode: .fill)
-                .frame(height: 404)
+            // ЗАМІНЕНО відео на картинку
+            Image(step.image(isUSA))
+                .resizable()
+                .scaledToFit()
+                .frame(maxWidth: .infinity)
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .padding(.horizontal, 14)
             
@@ -110,8 +108,11 @@ private struct PassportScanTutorialStep: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .frame(maxHeight: 100)
+            
             Spacer()
+            
             HorizontalDivider()
+            
             HStack {
                 if isLastStep {
                     AppButton(text: step.buttonText, rightIcon: .arrowRight) {
@@ -131,7 +132,6 @@ private struct PassportScanTutorialStep: View {
         .padding(.horizontal, 24)
     }
 }
-
 #Preview {
     PassportScanTutorialButton()
         .environmentObject(PassportViewModel())

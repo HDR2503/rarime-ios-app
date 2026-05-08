@@ -53,14 +53,7 @@ struct HomeView: View {
                     onClose: { selectedWidget = nil }
                 )
 
-            case .hiddenKeys:
-                HiddenKeysView(
-                    animation: namespace(for: .hiddenKeys),
-                    onClose: { selectedWidget = nil },
-                    onViewWallet: { mainViewModel.selectedTab = .wallet }
-                )
-                .environmentObject(hiddenKeysViewModel)
-
+        
             case .freedomTool:
                 PollsView(
                     onClose: { selectedWidget = nil },
@@ -111,12 +104,16 @@ struct HomeView: View {
         MainViewLayout {
             VStack(spacing: 0) {
                 header
-                HomeWidgetsView(
-                    selectedWidget: $selectedWidget,
-                    namespaceProvider: namespace
-                )
-                .environmentObject(viewModel)
-                .environmentObject(hiddenKeysViewModel)
+                
+                // ТІЛЬКИ Celestials ID block
+                ScrollView(showsIndicators: false) {
+                    VStack(spacing: 20) {
+                        CelestialsIdBlockView()
+                            .padding(.horizontal, 20)
+                            .padding(.top, 8)
+                    }
+                    .padding(.bottom, 20)
+                }
             }
             .background(.bgPrimary)
         }
@@ -125,60 +122,20 @@ struct HomeView: View {
     @ViewBuilder
     private var header: some View {
         HStack(alignment: .center, spacing: 8) {
-            HStack(alignment: .center, spacing: 8) {
-                Text("Hi")
-                    .h3()
-                    .foregroundStyle(.textPrimary)
-
-                if let passport = passportManager.passport {
-                    Text(passport.displayedFirstName.capitalized.components(separatedBy: " ").first ?? "")
-                        .additional3()
-                        .foregroundStyle(.textSecondary)
-                } else {
-                    Text("Stranger")
-                        .additional3()
-                        .foregroundStyle(.textSecondary)
-                }
-            }
-
-            #if DEVELOPMENT
-            Text("Development")
-                .caption2()
-                .padding(.horizontal, 12)
-                .padding(.vertical, 4)
-                .background(Color.warningLighter, in: Capsule())
-                .foregroundStyle(Color.warningDark)
-            ReserveTokensButton()
-                .environmentObject(viewModel)
-                .environmentObject(UserManager.shared)
-                .environmentObject(DecentralizedAuthManager.shared)
-                .environmentObject(PassportManager.shared)
-            #endif
+            Text("Hi")
+                .subtitle4()
+                .foregroundStyle(.textSecondary)
+            
+            Text(passportManager.passport?.displayedFirstName.components(separatedBy: " ").first?.capitalized ?? "Celestial")
+                .subtitle4()
+                .foregroundStyle(.textPrimary)
+                .lineLimit(1)
 
             Spacer()
-
-            ZStack {
-                Button {
-                    path.append(.notifications)
-                } label: {
-                    Image(.notification2Line)
-                        .iconMedium()
-                        .foregroundStyle(.textPrimary)
-                }
-
-                if notificationManager.unreadNotificationsCounter > 0 {
-                    Text(verbatim: "\(notificationManager.unreadNotificationsCounter)")
-                        .overline3()
-                        .foregroundStyle(.baseWhite)
-                        .frame(width: 16, height: 16)
-                        .background(Color.errorMain, in: Circle())
-                        .overlay { Circle().stroke(Color.invertedLight, lineWidth: 2) }
-                        .offset(x: 7, y: -8)
-                }
-            }
+            
+            // Notifications ВИМКНЕНО (як в Android закоментовано)
         }
-        .zIndex(1)
-        .padding([.top, .horizontal], 20)
+        .padding(.horizontal, 20)
         .padding(.bottom, 16)
         .background(Color.bgPrimary)
     }
